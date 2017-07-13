@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -46,8 +47,6 @@ public class Monitor {
 		}
 	    
 	} 
-	
-	
 	
 
 	/**
@@ -111,9 +110,20 @@ public class Monitor {
 		lblError.setBounds(163, 160, 94, 28);
 		lblError.setVisible(false);
 		
+		Button bt_back = new Button(shell, SWT.NONE);
+		bt_back.setBounds(163, 194, 94, 28);
+		bt_back.setText("Back");
+		bt_back.setVisible(false);
+		
+		
+		
 		MonitorJSONWriteFile monitorJSONWriteFile = new MonitorJSONWriteFile();
-        String linkAddress = "";
+		
+		
+        
+        ArrayList<String> linkAddress  = new ArrayList<>();
 		try {
+			
 			if(monitorJSONWriteFile != null) {
 				linkAddress = monitorJSONWriteFile.readFile();
 			}
@@ -121,28 +131,43 @@ public class Monitor {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if(!linkAddress.trim().equals("")) {
+		if(linkAddress != null) {
 			Monitor monitor = new Monitor();
-			boolean statusMonitor = monitor.processMonitor(linkAddress);
-			if(statusMonitor == true) {
-				lblNewLabel.setBounds(109, 104, 200, 28);
-				lblNewLabel.setVisible(true);
-				lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
-			} else {
-				lblNewLabel.setBounds(109, 104, 200, 28);
-				lblNewLabel.setVisible(true);
-				lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_RED));
+			for (int i = 0; i < linkAddress.size(); i++)
+			{
+				boolean statusMonitor = monitor.processMonitor(linkAddress.get(i));
+				if(statusMonitor == true) {
+					lblNewLabel.setBounds(109, 104, 200, 28);
+					lblNewLabel.setVisible(true);
+					lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+				} else {
+					lblNewLabel.setBounds(109, 104, 200, 28);
+					lblNewLabel.setVisible(true);
+					lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_RED));
+				}
 			}
         }
 		
+	
 		bt_click.addListener(SWT.Selection, new Listener() {
 			
 			@Override
 			public void handleEvent(Event arg0) {
 				bt_click.setVisible(false);
+				lblNewLabel.setVisible(false);
 				btn_addLink.setVisible(true);
 				lb_linkAddress.setVisible(true);
 				t_linkAddress.setVisible(true);
+				//Arraylist<String> c = null;
+				ArrayList<String> c = new ArrayList<>();
+				MonitorJSONWriteFile mo = new MonitorJSONWriteFile();
+				 try {
+					 c = mo.readFile();
+					 System.out.println(c);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -158,7 +183,8 @@ public class Monitor {
 				
 				String[] args = null;
 				try {
-					String linkAddress = t_linkAddress.getText();
+					String  linkAddress = t_linkAddress.getText();
+					
 					
 					if(linkAddress.trim().equals("")) {
 						lblError.setText("Link not empty");
@@ -170,16 +196,17 @@ public class Monitor {
 						
 						MonitorJSONWriteFile monitorWriteFile = new MonitorJSONWriteFile();
 						monitorWriteFile.writeFile(linkAddress);
-//						App monitorApp = new App();
-//						boolean statusMonitor = monitorApp.runMonitor(linkAddress);
 						Monitor monitor = new Monitor();
+						
 						boolean statusMonitor = monitor.processMonitor(linkAddress);
 						if(statusMonitor == true) {
 							lblNewLabel.setVisible(true);
 							lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+							bt_back.setVisible(true);
 						} else {
 							lblNewLabel.setVisible(true);
 							lblNewLabel.setBackground(SWTResourceManager.getColor(SWT.COLOR_RED));
+							bt_back.setVisible(true);
 						}
 						System.out.println(statusMonitor); 
 					}
@@ -190,8 +217,19 @@ public class Monitor {
 		
 			}
 		});
+		bt_back.addListener(SWT.Selection, new Listener() {
+			
+			@Override
+			public void handleEvent(Event arg0) {
+				lb_linkAddress.setVisible(true);
+				t_linkAddress.setVisible(true);
+				btn_addLink.setVisible(true);
+				lblNewLabel.setVisible(false);
+			}
+		});
 
 	}
+	
 	
 	private boolean processMonitor(String link) {
 		boolean statusMonitor = false;
