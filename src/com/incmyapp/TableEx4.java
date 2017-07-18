@@ -1,6 +1,7 @@
 package com.incmyapp;
 
 import java.awt.Composite;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -31,14 +32,16 @@ public class TableEx4 {
 	private Text text1;
 	private Text text2;
 	private Table table;
+
 	String url;
 	Color color;
-	int time = 5000;
+	int time = 10 * 1000;
+	int indexs;
 
 	MonitorJSONWriteFile monitorJSONWriteFile = new MonitorJSONWriteFile();
 	ArrayList<String> link = new ArrayList<>();
 	ArrayList<String> links = new ArrayList<>();
-	ArrayList<String> status = new ArrayList<>();
+
 	static Display display = new Display();
 	Color red = display.getSystemColor(SWT.COLOR_RED);
 	Color green = display.getSystemColor(SWT.COLOR_GREEN);
@@ -70,6 +73,7 @@ public class TableEx4 {
 			Monitor monitor = new Monitor();
 			String c = null;
 			TableItem item = new TableItem(table, SWT.NULL);
+
 			item.setText(1, link.get(i));
 			boolean statusMonitor = monitor.processMonitor(link.get(i));
 			if (statusMonitor == true) {
@@ -113,52 +117,18 @@ public class TableEx4 {
 			}
 		});
 
-		Runnable timer = new Runnable() {
-			public void run() {
-				try {
-					links = monitorJSONWriteFile.readFile();
-					link = links;
-					// for (int i = 0; i < titles.length; i++) {
-					// TableColumn column1 = new TableColumn(table, SWT.NULL);
-					// column1.setText(titles[i]);
-					// column1.setWidth(150);
-					//
-					// }
-					//
-					// for (int i = 0; i < links.size(); i++) {
-					// Monitor monitor = new Monitor();
-					// String c = null;
-					// TableItem item = new TableItem(table, SWT.NULL);
-					// item.setText(1, links.get(i));
-					// boolean statusMonitor = monitor.processMonitor(links.get(i));
-					// if(statusMonitor == true) {
-					// c = "Green";
-					// color = green;
-					// } else {
-					// c = "Red";
-					// color = red;
-					// }
-					// System.out.println(c);
-					// item.setText(0,c);
-					// item.setForeground(0, color);
-					//
-					//
-					//
-					//
-					// }
-					//
-					System.out.println("link" + link);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("haha");
-				display.timerExec(time, this);
-			}
-		};
-		display.timerExec(time, timer);
-
-		shell.setText("Table widget");
+		// Button deleteBtn = new Button(shell, SWT.PUSH);
+		// deleteBtn.setText("Delete");
+		// deleteBtn.addListener(SWT.Selection, event -> {
+		// indexs = table.getSelectionIndex();
+		// TableItem [] tableItems = table.getItems();
+		// tableItems[indexs].getText();
+		// System.out.println("table :"+ tableItems[indexs].getText());
+		// table.remove(table.getSelectionIndex());
+		// link.remove(indexs);
+		// });
+		this.restart();
+		shell.setText("Monitor Manager");
 		shell.pack();
 		shell.open();
 
@@ -193,13 +163,51 @@ public class TableEx4 {
 
 	}
 
+	private void onDeleteButton(Event event) {
+
+	}
+
 	public void restart() throws InterruptedException {
 
-		long endTime = System.currentTimeMillis() + 15000;
-		while (System.currentTimeMillis() < endTime) {
-			Thread.sleep(endTime);
-			System.out.println("restart");
-		}
+		Runnable timer = new Runnable() {
+			public void run() {
+				try {
+					links = monitorJSONWriteFile.readFile();
+					link = links;
+					table.setItemCount(0);
+					for (int i = 0; i < links.size(); i++) {
+
+						Monitor monitor = new Monitor();
+						String c = null;
+						TableItem item = new TableItem(table, SWT.NULL);
+
+						System.out.println(table.getItemCount());
+						item.setText(1, links.get(i));
+						boolean statusMonitor = monitor.processMonitor(links.get(i));
+						if (statusMonitor == true) {
+							c = "Green";
+							color = green;
+						} else {
+							c = "Red";
+							color = red;
+						}
+						System.out.println(c);
+						item.setText(0, c);
+						// item.isAutoDirection();
+						item.setForeground(0, color);
+
+					}
+
+					System.out.println("link" + link);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("haha");
+				display.timerExec(time, this);
+			}
+		};
+		display.timerExec(time, timer);
 
 	}
 
