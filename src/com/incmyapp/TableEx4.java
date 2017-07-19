@@ -35,12 +35,13 @@ public class TableEx4 {
 
 	String url;
 	Color color;
-	int time = 10 * 1000;
+	int time = 5 * 60 * 1000;
 	int indexs;
+	String[] titles = { "Name", "Url" };
 
 	MonitorJSONWriteFile monitorJSONWriteFile = new MonitorJSONWriteFile();
 	ArrayList<String> link = new ArrayList<>();
-	ArrayList<String> links = new ArrayList<>();
+	ArrayList<String> linksname = new ArrayList<>();
 
 	static Display display = new Display();
 	Color red = display.getSystemColor(SWT.COLOR_RED);
@@ -59,36 +60,7 @@ public class TableEx4 {
 
 		table = new Table(shell, SWT.BORDER | SWT.MULTI);
 		table.setHeaderVisible(true);
-
-		String[] titles = { "Status", "Url" };
-
-		for (int i = 0; i < titles.length; i++) {
-			TableColumn column = new TableColumn(table, SWT.NULL);
-			column.setText(titles[i]);
-			column.setWidth(150);
-
-		}
-
-		for (int i = 0; i < link.size(); i++) {
-			Monitor monitor = new Monitor();
-			String c = null;
-			TableItem item = new TableItem(table, SWT.NULL);
-
-			item.setText(1, link.get(i));
-			boolean statusMonitor = monitor.processMonitor(link.get(i));
-			if (statusMonitor == true) {
-				c = "Green";
-				color = green;
-			} else {
-				c = "Red";
-				color = red;
-			}
-			System.out.println(c);
-			item.setText(0, c);
-			item.setForeground(0, color);
-			System.out.println("link 1 :" + link);
-
-		}
+		this.run();
 
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.horizontalSpan = 5;
@@ -97,10 +69,10 @@ public class TableEx4 {
 		table.setLayoutData(gd);
 
 		Label carName = new Label(shell, SWT.NONE);
-		carName.setText("Status:");
+		carName.setText("Name :");
 		text1 = new Text(shell, SWT.BORDER);
-		carName.setVisible(false);
-		text1.setVisible(false);
+		carName.setVisible(true);
+		text1.setVisible(true);
 
 		Label linkAdress = new Label(shell, SWT.NONE);
 		linkAdress.setText("Url:");
@@ -117,16 +89,20 @@ public class TableEx4 {
 			}
 		});
 
-		// Button deleteBtn = new Button(shell, SWT.PUSH);
-		// deleteBtn.setText("Delete");
-		// deleteBtn.addListener(SWT.Selection, event -> {
-		// indexs = table.getSelectionIndex();
-		// TableItem [] tableItems = table.getItems();
-		// tableItems[indexs].getText();
-		// System.out.println("table :"+ tableItems[indexs].getText());
-		// table.remove(table.getSelectionIndex());
-		// link.remove(indexs);
-		// });
+		Button deleteBtn = new Button(shell, SWT.PUSH);
+		deleteBtn.setText("Delete");
+		deleteBtn.addListener(SWT.Selection, event -> {
+			indexs = table.getSelectionIndex();
+			TableItem[] tableItems = table.getItems();
+			tableItems[indexs].getText();
+			table.remove(table.getSelectionIndex());
+			try {
+				monitorJSONWriteFile.deleteJson(indexs);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
 		this.restart();
 		shell.setText("Monitor Manager");
 		shell.pack();
@@ -147,23 +123,49 @@ public class TableEx4 {
 		TableItem item = new TableItem(table, SWT.NULL);
 
 		MonitorJSONWriteFile monitorWriteFile = new MonitorJSONWriteFile();
-		monitorWriteFile.writeFile(val2);
+		monitorWriteFile.writeFile(val1, val2);
 		Monitor monitor = new Monitor();
 		boolean statusMonitor = monitor.processMonitor(val2);
 		if (statusMonitor == true) {
-			val1 = " Green";
 			color = green;
 		} else {
-			val1 = "Red";
 			color = red;
 		}
 		item.setText(0, val1);
 		item.setText(1, val2);
-		item.setForeground(0, color);
+		item.setForeground(1, color);
 
 	}
 
-	private void onDeleteButton(Event event) {
+	public void run() throws IOException {
+		linksname = monitorJSONWriteFile.readName();
+		
+		for (int i = 0; i < titles.length; i++) {
+			TableColumn column = new TableColumn(table, SWT.NULL);
+			column.setText(titles[i]);
+			column.setWidth(150);
+
+		}
+
+		for (int i = 0; i < link.size(); i++) {
+			Monitor monitor = new Monitor();
+
+			TableItem item = new TableItem(table, SWT.NULL);
+			item.setText(1, link.get(i));
+
+			boolean statusMonitor = monitor.processMonitor(link.get(i).trim());
+			if (statusMonitor == true) {
+
+				color = green;
+			} else {
+
+				color = red;
+			}
+			
+			item.setText(0, linksname.get(i));
+			item.setForeground(1, color);
+
+		}
 
 	}
 
@@ -172,29 +174,27 @@ public class TableEx4 {
 		Runnable timer = new Runnable() {
 			public void run() {
 				try {
-					links = monitorJSONWriteFile.readFile();
-					link = links;
+					link = monitorJSONWriteFile.readFile();
+					linksname = monitorJSONWriteFile.readName();
+
 					table.setItemCount(0);
-					for (int i = 0; i < links.size(); i++) {
+					for (int i = 0; i < link.size(); i++) {
 
 						Monitor monitor = new Monitor();
-						String c = null;
+
 						TableItem item = new TableItem(table, SWT.NULL);
 
 						System.out.println(table.getItemCount());
-						item.setText(1, links.get(i));
-						boolean statusMonitor = monitor.processMonitor(links.get(i));
+						item.setText(1, link.get(i));
+						boolean statusMonitor = monitor.processMonitor(link.get(i));
 						if (statusMonitor == true) {
-							c = "Green";
 							color = green;
 						} else {
-							c = "Red";
 							color = red;
 						}
-						System.out.println(c);
-						item.setText(0, c);
-						// item.isAutoDirection();
-						item.setForeground(0, color);
+						System.out.println(linksname.get(i));
+						item.setText(0, linksname.get(i));
+						item.setForeground(1, color);
 
 					}
 
@@ -203,7 +203,7 @@ public class TableEx4 {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("haha");
+				System.out.println("reload");
 				display.timerExec(time, this);
 			}
 		};

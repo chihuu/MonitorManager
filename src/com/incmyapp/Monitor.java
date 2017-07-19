@@ -210,7 +210,7 @@ public class Monitor {
 						t_linkAddress.setVisible(false);
 
 						MonitorJSONWriteFile monitorWriteFile = new MonitorJSONWriteFile();
-						monitorWriteFile.writeFile(linkAddress);
+						monitorWriteFile.writeFile(linkAddress,"");
 						Monitor monitor = new Monitor();
 
 						boolean statusMonitor = monitor.processMonitor(linkAddress);
