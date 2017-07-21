@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -28,10 +29,13 @@ import javax.swing.Timer;
 
 import com.myappinc.monitor.monitorManager.MonitorJSONWriteFile;
 
-public class TableEx4 {
+public class TableEx4
+
+{
 	private Text text1;
 	private Text text2;
 	private Table table;
+	private Label lbError;
 
 	String url;
 	Color color;
@@ -57,7 +61,25 @@ public class TableEx4 {
 		Shell shell = new Shell(display, SWT.SHELL_TRIM | SWT.CENTER);
 		shell.setLayout(new GridLayout(5, false));
 		link = monitorJSONWriteFile.readFile();
+		
+		
+		Button configBtn = new Button(shell, SWT.PUSH);
+		configBtn.setText("Config");
+		configBtn.addListener(SWT.Selection, new Listener() {
 
+			@Override
+			public void handleEvent(Event arg0) {
+				TableConfig tbConfig = new TableConfig();
+				try {
+					tbConfig.open();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		});
 		table = new Table(shell, SWT.BORDER | SWT.MULTI);
 		table.setHeaderVisible(true);
 		this.run();
@@ -75,15 +97,27 @@ public class TableEx4 {
 		text1.setVisible(true);
 
 		Label linkAdress = new Label(shell, SWT.NONE);
-		linkAdress.setText("Url:");
+		linkAdress.setText("Url :");
 		text2 = new Text(shell, SWT.BORDER);
 		text2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
 
+		Label lbnError = new Label(shell, SWT.NONE);
+		lbnError.setText("                                    ");
 		Button addBtn = new Button(shell, SWT.PUSH);
 		addBtn.setText("Insert");
 		addBtn.addListener(SWT.Selection, event -> {
 			try {
-				onInsertButtonSelected(event);
+
+				String val1 = text1.getText();
+				String val2 = text2.getText();
+				if (val1.isEmpty() || val2.isEmpty()) {
+					lbnError.setText("Please insert data !");
+					lbnError.setForeground(red);
+				} else {
+					onInsertButtonSelected(event);
+				}
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -103,8 +137,20 @@ public class TableEx4 {
 			}
 		});
 
+		Button cancelBtn = new Button(shell, SWT.PUSH);
+		cancelBtn.setText("Cancel");
+		cancelBtn.addListener(SWT.Selection, event -> {
+			display.dispose();
+		});
 		this.restart();
+		org.eclipse.swt.widgets.Monitor primary = display.getPrimaryMonitor ();
+		Rectangle bounds = primary.getBounds ();
+		Rectangle rect = shell.getBounds ();
+		int x = bounds.x + (bounds.width - rect.width) / 1;
+		int y = bounds.y + (bounds.height - rect.height) / 2;
+		shell.setLocation (x, y);
 		shell.setText("Monitor Manager");
+		
 		shell.pack();
 		shell.open();
 
@@ -121,7 +167,9 @@ public class TableEx4 {
 		String val1 = text1.getText();
 		String val2 = text2.getText();
 		TableItem item = new TableItem(table, SWT.NULL);
-
+		if (val1.isEmpty() || val2.isEmpty()) {
+			// lbError.setText("Please insert !");
+		}
 		MonitorJSONWriteFile monitorWriteFile = new MonitorJSONWriteFile();
 		monitorWriteFile.writeFile(val1, val2);
 		Monitor monitor = new Monitor();
@@ -139,31 +187,35 @@ public class TableEx4 {
 
 	public void run() throws IOException {
 		linksname = monitorJSONWriteFile.readName();
-		
+		TableConfig tbConfig = new TableConfig();
+		tbConfig.close();
+
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NULL);
 			column.setText(titles[i]);
 			column.setWidth(150);
 
 		}
+		if (link.size() > 0 && link.get(0) != null) {
+			for (int i = 0; i < link.size(); i++) {
+				Monitor monitor = new Monitor();
 
-		for (int i = 0; i < link.size(); i++) {
-			Monitor monitor = new Monitor();
+				TableItem item = new TableItem(table, SWT.NULL);
+				item.setText(1, link.get(i));
 
-			TableItem item = new TableItem(table, SWT.NULL);
-			item.setText(1, link.get(i));
+				boolean statusMonitor = monitor.processMonitor(link.get(i).trim());
+				if (statusMonitor == true) {
 
-			boolean statusMonitor = monitor.processMonitor(link.get(i).trim());
-			if (statusMonitor == true) {
+					color = green;
+				} else {
 
-				color = green;
-			} else {
+					color = red;
+				}
 
-				color = red;
+				item.setText(0, linksname.get(i));
+				item.setForeground(1, color);
+
 			}
-			
-			item.setText(0, linksname.get(i));
-			item.setForeground(1, color);
 
 		}
 

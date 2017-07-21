@@ -78,8 +78,6 @@ public class Monitor {
 	 */
 	protected void createContents() {
 		shell = new Shell();
-		// Display dis = Display.getDefault();
-		// Image image = new Image(dis, "/Users/huu/playicon.svg");
 		shell.setSize(450, 300);
 		shell.setText("SWT Application");
 
@@ -210,7 +208,7 @@ public class Monitor {
 						t_linkAddress.setVisible(false);
 
 						MonitorJSONWriteFile monitorWriteFile = new MonitorJSONWriteFile();
-						monitorWriteFile.writeFile(linkAddress,"");
+						monitorWriteFile.writeFile(linkAddress, "");
 						Monitor monitor = new Monitor();
 
 						boolean statusMonitor = monitor.processMonitor(linkAddress);
@@ -251,8 +249,8 @@ public class Monitor {
 		boolean statusMonitor = false;
 		try {
 			App monitorApp = new App();
-			System.out.print(link);
-			statusMonitor = monitorApp.runMonitor(link);
+			System.out.print("process : " + link);
+			statusMonitor = monitorApp.runMonitor1(link);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
