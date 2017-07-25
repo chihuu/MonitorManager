@@ -8,12 +8,22 @@
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.equinox.registry_3.7.0.v20170222-1344.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.equinox.registry_3.7.0.v20170222-1344.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.core.runtime_3.13.0.v20170207-1030.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.core.runtime_3.13.0.v20170207-1030.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.text_3.6.100.v20170203-0814.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.text_3.6.100.v20170203-0814.jar"/>
-	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.swt.cocoa.macosx.x86_64_3.106.0.v20170608-0516.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.swt.cocoa.macosx.x86_64_3.106.0.v20170608-0516.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.swt.cocoa.macosx.x86_64_3.106.0.v20170608-0516.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.swt.cocoa.macosx.x86_64_3.106.0.v20170608-0516.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.jface_3.13.0.v20170503-1507.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.jface_3.13.0.v20170503-1507.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.jface.text_3.12.0.v20170523-1043.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.jface.text_3.12.0.v20170523-1043.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.ui.workbench_3.110.0.v20170612-1255.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.ui.workbench_3.110.0.v20170612-1255.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/com.ibm.icu_58.2.0.v20170418-1837.jar" sourcepath="/Users/huu/.p2/pool/plugins/com.ibm.icu_58.2.0.v20170418-1837.jar"/>
 	<classpathentry kind="lib" path="/Users/huu/.p2/pool/plugins/org.eclipse.ui.forms_3.7.100.v20170517-1755.jar" sourcepath="/Users/huu/.p2/pool/plugins/org.eclipse.ui.forms_3.7.100.v20170517-1755.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/monitorManager"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/monitorManager">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="org.eclipse.swt"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="/Users/huu/Downloads/org.eclipse.swt.win32.win32.x86_64-4.3.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.eclipse.swt">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="org.eclipse.swt.cocoa.macosx.x86_64"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

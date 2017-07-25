@@ -103,8 +103,14 @@ public class TableConfig {
 		MonitorJSONWriteFile monitor = new MonitorJSONWriteFile();
 		pathFFmpeg = monitor.readConfigFFmpeg();
 		pathFFprobe = monitor.readConfigFFmprobe();
-		t_ffmpegUrl.setText(pathFFmpeg);
-		t_ffprobeUrl.setText(pathFFprobe);
+		
+		if(pathFFmpeg != null && pathFFprobe != null) {
+			t_ffmpegUrl.setText(pathFFmpeg);
+			t_ffprobeUrl.setText(pathFFprobe);
+		} else {
+			t_ffmpegUrl.setText("");
+			t_ffprobeUrl.setText("");
+		}
 
 		
 		Button btn_insertUrl = new Button(shell, SWT.NONE);
@@ -125,11 +131,16 @@ public class TableConfig {
 						lberror1.setForeground(color);
 						lberror2.setForeground(color);
 
-					} else
-
+					} else {
 						monitor.writeConfigFile(urlFFmpeg.trim(), urlFFprobe.trim());
+						TableEx4 tb  = new TableEx4(display);
+						tb.run();
+					}
 				} catch (IOException e1) {
 
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
@@ -138,19 +149,6 @@ public class TableConfig {
 		btn_insertUrl.setBounds(167, 195, 94, 28);
 		btn_insertUrl.setText("Insert");
 		
-//		Button btCancel = new Button(shell, SWT.NONE);
-//		btCancel.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				
-//					display.dispose();
-//				
-//				
-//			}
-//		});
-//		btCancel.setBounds(67, 195, 94, 28);
-//		btCancel.setText("Cancel");
-
 	}
 	public void close() {
 		display.isDisposed();

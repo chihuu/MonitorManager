@@ -1,7 +1,10 @@
 package com.incmyapp;
 
+import java.awt.AWTException;
 import java.awt.Composite;
+import java.awt.HeadlessException;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -188,7 +191,7 @@ public class TableEx4
 	public void run() throws IOException {
 		linksname = monitorJSONWriteFile.readName();
 		TableConfig tbConfig = new TableConfig();
-		tbConfig.close();
+		
 
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NULL);
@@ -252,7 +255,6 @@ public class TableEx4
 
 					System.out.println("link" + link);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				System.out.println("reload");
